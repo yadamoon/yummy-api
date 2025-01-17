@@ -1,7 +1,10 @@
 package com.bytepulse.yummy.controller;
 
+import com.bytepulse.yummy.dto.cakes.CreateCakeDto;
+import com.bytepulse.yummy.dto.cakes.UpdateCakeDto;
 import com.bytepulse.yummy.model.Cake;
 import com.bytepulse.yummy.service.CakeService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,13 +32,19 @@ public class CakeController {
     }
 
     @PostMapping
-    public ResponseEntity<Cake> createCake(@RequestBody Cake cake) {
+    public ResponseEntity<Cake> createCake(@Valid @RequestBody CreateCakeDto cakeDto) {
+        Cake cake = new Cake();
+        cake.setName(cakeDto.getName());
+        cake.setPrice(cakeDto.getPrice());
         Cake createdCake = cakeService.createCake(cake);
         return ResponseEntity.ok(createdCake);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cake> updateCake(@PathVariable Long id, @RequestBody Cake cakeDetails) {
+    public ResponseEntity<Cake> updateCake(@PathVariable Long id, @Valid @RequestBody UpdateCakeDto cakeDto) {
+        Cake cakeDetails = new Cake();
+        cakeDetails.setName(cakeDto.getName());
+        cakeDetails.setPrice(cakeDto.getPrice());
         Cake updatedCake = cakeService.updateCake(id, cakeDetails);
         return ResponseEntity.ok(updatedCake);
     }
