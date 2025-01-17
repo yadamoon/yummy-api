@@ -1,8 +1,8 @@
-package com.bytepulse.yummy.dto;
+package com.bytepulse.yummy.dto.cakes;
 
 import jakarta.validation.constraints.*;
 
-public class CreateCakeDto {
+public class UpdateCakeDto {
 
     @NotBlank(message = "Cake name is required.")
     @Size(max = 100, message = "Cake name must not exceed 100 characters.")
