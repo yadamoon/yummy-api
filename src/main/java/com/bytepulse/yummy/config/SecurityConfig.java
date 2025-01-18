@@ -47,7 +47,7 @@ public class SecurityConfig {
             throws Exception {
         return http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/users/create", "/users/signin").permitAll())
+                        .requestMatchers("/users/create", "/users/signin", "/sendMail").permitAll())
                 // .requestMatchers("/auth/hello").authenticated())
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
