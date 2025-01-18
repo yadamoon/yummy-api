@@ -18,8 +18,4 @@ Yummy API Cake is a **Spring Boot** application built to manage various aspects 
 - **DTOs & Validation**: To validate input data and maintain consistency.
 - **Maven**: For dependency management and building the application.
 
-## Folder Structure
-
-Here is the folder structure of the project:
-yummy-api-cake/ ├── src/ │ ├── main/ │ │ ├── java/ │ │ │ ├── com/ │ │ │ │ └── bytepulse/ │ │ │ │ └── yummy/ │ │ │ │ ├── config/ # Security and JWT configuration files │ │ │ │ ├── controller/ # REST API controllers │ │ │ │ ├── dto/ # Data Transfer Objects (DTOs) for validation │ │ │ │ ├── model/ # Entities and enums (e.g., User, Role) │ │ │ │ ├── repository/ # Data access layer (repositories) │ │ │ │ ├── security/ # JWT authentication logic and filters │ │ │ │ ├── service/ # Business logic and services │ │ │ │ └── exception/ # Exception handling classes │ │ └── resources/ │ │ ├── application.properties # Database connection and other configuration │ │ ├── static/ # Static assets (e.g., images, CSS) │ │ └── templates/ # Template files for views (if any) ├── pom.xml # Project dependencies and build configuration └── README.md # Project overview and documentation
 
