@@ -1,6 +1,8 @@
 package com.bytepulse.yummy.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +19,8 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final Map<String, String> otpStorage = new HashMap<>();
+    private final Map<String, Long> otpExpiry = new HashMap<>();
 
     public UserService(UserRepository _userRepository, PasswordEncoder _encoder) {
         this.userRepository = _userRepository;
@@ -61,5 +65,41 @@ public class UserService implements UserDetailsService {
         Optional<User> userDetail = userRepository.findByEmail(username);
         return userDetail.map(UserInfoDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
+    }
+
+    public String generateOtp(String email) {
+        System.out.println("Generating OTP for : " + email);
+        Optional<User> user = userRepository.findByEmail(email);
+        System.out.println("User found: " + user.isEmpty());
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found with email: " + email);
+        }
+
+        String otp = String.valueOf((int) (Math.random() * 9000) + 1000); // Generate 4-digit OTP
+        otpStorage.put(email, otp);
+        otpExpiry.put(email, System.currentTimeMillis() + (5 * 60 * 1000)); // 5 minutes expiry
+        return otp;
+    }
+
+    public boolean validateOtp(String email, String otp) {
+        String storedOtp = otpStorage.get(email);
+        Long expiryTime = otpExpiry.get(email);
+
+        if (storedOtp != null && expiryTime != null) {
+            if (storedOtp.equals(otp) && System.currentTimeMillis() < expiryTime) {
+                otpStorage.remove(email);
+                otpExpiry.remove(email);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void resetPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        user.setPassword(encoder.encode(newPassword));
+        userRepository.save(user);
     }
 }
