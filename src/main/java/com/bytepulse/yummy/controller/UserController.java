@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.bytepulse.yummy.dto.users.AuthRequest;
 import com.bytepulse.yummy.dto.users.CreateUserDto;
+import com.bytepulse.yummy.dto.users.ForgetPassword;
+import com.bytepulse.yummy.dto.users.ResetPassword;
+import com.bytepulse.yummy.model.EmailDetails;
 import com.bytepulse.yummy.model.User;
+import com.bytepulse.yummy.service.EmailService;
 import com.bytepulse.yummy.service.JwtService;
 import com.bytepulse.yummy.service.UserService;
 
@@ -31,12 +35,16 @@ public class UserController {
     // private final PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
     private JwtService jwtService;
+    private final EmailService emailService;
 
     @Autowired
-    public UserController(UserService userService, JwtService jwtService, AuthenticationManager authenticationManager) {
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
+    public UserController(UserService _userService, JwtService _jwtService,
+            AuthenticationManager _authenticationManager,
+            EmailService _emailService) {
+        this.userService = _userService;
+        this.authenticationManager = _authenticationManager;
+        this.jwtService = _jwtService;
+        this.emailService = _emailService;
     }
 
     @PostMapping("/create")
@@ -45,6 +53,36 @@ public class UserController {
         System.out.println("u" + u);
         return ResponseEntity.status(HttpStatus.CREATED).body("User created");
 
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgetPassword fp) {
+
+        try {
+
+            String otp = userService.generateOtp(fp.getEmail());
+            System.out.println("otp: " + otp);
+            EmailDetails emailDetails = new EmailDetails(fp.getEmail(), "Your OTP Code", "Your OTP is: " + otp);
+            emailService.sendSimpleMail(emailDetails);
+            return ResponseEntity.ok("OTP sent to your email.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPassword resetPassword) {
+        try {
+            boolean isOtpValid = userService.validateOtp(resetPassword.getEmail(), resetPassword.getOtp());
+            if (isOtpValid) {
+                userService.resetPassword(resetPassword.getEmail(), resetPassword.getNewPassword());
+                return ResponseEntity.ok("Password reset successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        }
     }
 
     @PostMapping("/signin")
@@ -100,14 +138,4 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    // @PostMapping("/signin")
-    // public ResponseEntity<JwtDto> signIn(@RequestBody @Valid SignInDto data) {
-    // System.out.println("data >>>>>>>>>>>>" + data);
-    // var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(),
-    // data.password());
-    // var authUser = authenticationManager.authenticate(usernamePassword);
-    // var accessToken = tokenService.generateAccessToken((User)
-    // authUser.getPrincipal());
-    // return ResponseEntity.ok(new JwtDto(accessToken));
-    // }
 }
