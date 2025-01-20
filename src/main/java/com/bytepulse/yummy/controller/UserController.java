@@ -107,7 +107,7 @@ public class UserController {
 
     // GET all users
     @GetMapping
-    @Secured("Admin")
+    // @Secured("Admin")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
