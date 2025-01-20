@@ -46,10 +46,27 @@ public class SecurityConfig {
             AuthenticationProvider authenticationProvider)
             throws Exception {
         return http
-                .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/users/create", "/users/signin", "/sendMail", "/users/forgot-password",
-                                "/users/reset-password")
-                        .permitAll())
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers(
+                                "/users/create",
+                                "/users",
+                                "/users/signin",
+                                "/sendMail",
+                                "/users/forgot-password",
+                                "/users/reset-password",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/v3/api-docs.yaml",
+                                "/v3/api-docs.json")
+
+                        .permitAll() // Allow Swagger and public endpoints
+                        .anyRequest()
+                        .authenticated())
+                .formLogin(withDefaults()) // Secure other endpoints )
+
                 // .requestMatchers("/auth/hello").authenticated())
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
