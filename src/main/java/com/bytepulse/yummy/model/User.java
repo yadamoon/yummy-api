@@ -1,5 +1,7 @@
 package com.bytepulse.yummy.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Pattern;
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data // Lombok generates getters, setters, equals, hashCode, and toString methods
 @NoArgsConstructor // Lombok generates a no-argument constructor
 @AllArgsConstructor // Lombok generates an all-arguments constructor
-public class User {
+public class User implements Serializable {
   @jakarta.persistence.Id
   @jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
   private Long id;
