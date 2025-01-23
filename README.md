@@ -11,6 +11,7 @@ Yummy API Cake is a **Spring Boot** application built to manage various aspects 
 - **Password Management**: Added support for password reset functionality, including the ability to send password reset emails and update user passwords securely.
 - **Data Validation**: Used **DTOs (Data Transfer Objects)** with validation annotations to ensure proper data handling and prevent invalid data from being processed.
 - **MySQL Database**: The application uses MySQL as its primary database for data storage and management.
+- **Redis Caching**: Integrated Redis for caching user data, improving performance and reducing database load.
 - **Clean Code Architecture**: The codebase follows industry-standard practices for clean, readable, and maintainable code.
 - **Email Sending Feature**: Integrated an email functionality to send emails via SMTP. The feature uses `EmailController`, `EmailService`, and `EmailDetails` to send emails such as notifications, password resets, and more.
 
@@ -19,6 +20,7 @@ Yummy API Cake is a **Spring Boot** application built to manage various aspects 
 - **Spring Boot**: The core framework for building the backend.
 - **JWT**: For secure authentication and authorization.
 - **MySQL**: Database used to store and manage data.
+- **Redis**: For caching to enhance performance.
 - **Spring Security**: For securing endpoints and managing authentication.
 - **DTOs & Validation**: To validate input data and maintain consistency.
 - **Maven**: For dependency management and building the application.
